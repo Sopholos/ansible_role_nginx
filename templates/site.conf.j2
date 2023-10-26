@@ -1,0 +1,76 @@
+server {
+{% if item.domain != 'default' %}
+    server_name  {{ item.domain }};
+{% else %}
+    server_name _;
+{% endif %}
+client_max_body_size {{ nginx_max_body_size }};
+access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
+error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
+{% if item.root_path is defined %}
+    root   {{item.root_path}};
+{% endif %}
+{% for location in item.locations %}
+    location {{ location.path }} {
+{% if location.default_headers %}
+        include {{ nginx_default_headers_file }};
+{% endif %}
+{% for rule in location.rewrite_rules %}
+        rewrite {{ rule.regex }} {{ rule.url }} {{ rule.flag | default ("") }};
+{% endfor %}
+{% if location.proxy_pass is defined %}
+{% if location.proxy_pass == 'local' %}
+        proxy_pass "$local_scheme$local_domain";
+{% else %}
+        proxy_pass "{{ location.proxy_pass }}";
+{% endif %}
+{% endif %}
+{% for header in location.proxy_headers %}
+        proxy_set_header {{ header.name }} {{ header.value }};
+{% endfor %}
+{% for option in location.options %}
+        proxy_set_header {{ option.name }} {{ option.value }};
+{% endfor %}
+    }
+{% endfor %}
+
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+    gzip_http_version 1.1;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 500;
+
+{% if not domain_ssl.stat.exists %}
+{% if item.domain != 'default' %}
+    listen {{ item.port | default (80) }};
+{% else %}
+    listen {{ item.port | default (80) }} default_server;
+{% endif %}
+{% endif %}
+
+{% if domain_ssl.stat.exists %}
+{% if item.domain != 'default' %}
+    listen {{ item.sslport | default (443) }};
+{% else %}
+    listen {{ item.sslport | default (443) }} ssl default_server;
+{% endif %}
+    ssl_certificate {{ item.certs_pub_file }};
+    ssl_certificate_key {{ item.certs_key_file }};
+{% endif %}
+}
+{% if domain_ssl.stat.exists %}
+server {
+    return 301 https://$host$request_uri;
+{% if item.domain != 'default' %}
+    server_name  {{ item.domain }};
+{% else %}
+    server_name _;
+{% endif %}
+    listen {{ item.port | default (80) }};
+
+    return 404;
+}
+{% endif %}
