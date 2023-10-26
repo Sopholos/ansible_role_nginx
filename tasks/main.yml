@@ -1,0 +1,46 @@
+- name: install nginx
+  apt:
+    name: "nginx"
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure data directories for virtual sites exists
+  file:
+    path: "{{ item.root_path }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+  when: item.root_path is defined
+  with_items:
+    "{{ nginx_site_configs }}"
+
+- name: Ensure cache dir exists
+  file:
+    path: "{{ nginx_cache_path  }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+
+- name: setup log formats
+  template:
+    src: log_format.conf.j2
+    dest: "{{ nginx_config_dir }}/log_format.conf"
+  notify:
+    nginx restart
+
+- name: setup proxy cache
+  template:
+    src: proxy_cache.conf.j2
+    dest: "{{ nginx_config_dir }}/proxy_cache.conf"
+  notify:
+    nginx restart
+
+- name: setup geoip2 module
+  include_tasks: setup_geoip2.yml
+  when: nginx_module_geoip2_enabled
+
+- name: setup vhosts
+  include_tasks: setup_vhost.yml
+  with_items:
+    - "{{ nginx_site_configs }}"
+

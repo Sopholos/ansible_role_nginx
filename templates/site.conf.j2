@@ -1,0 +1,43 @@
+server {
+    server_name  {{ item.domain }};
+
+access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.json.log json_log;
+access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log extended;
+error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log;
+client_max_body_size 50m;
+{% if item.root_path is defined %}
+    root   {{item.root_path}};
+{% endif %}
+{% if item.locations == 'default' %}
+    include /etc/nginx/snippets/locations_{{item.locations}}.conf;
+{% else %}
+    include /etc/nginx/snippets/locations_{{item.upstream}}.conf;
+{% endif %}
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+    gzip_http_version 1.1;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 500;
+
+{% if not domain_ssl.stat.exists %}
+    listen {{ item.port | default (80) }};
+{% endif %}
+
+{% if domain_ssl.stat.exists %}
+    listen 443 ssl;
+    ssl_certificate ;
+    ssl_certificate_key ;
+{% endif %}
+}
+{% if domain_ssl.stat.exists %}
+server {
+    if ($host = {{ item.domain }}) {
+        return 301 https://$host$request_uri;
+    }
+    server_name  {{ item.domain }};
+   listen 80;
+    return 404;
+}
+{% endif %}

@@ -1,0 +1,19 @@
+- name: check if exists letsencrypt cert
+  stat:
+    path: "{{ nginx_certs_path }}/{{ item.domain }}/server.crt"
+  register: domain_ssl
+
+- name: "config virtual domain {{ item.domain }}"
+  template:
+    src: site.conf.j2
+    dest: "{{ nginx_sites_available_dir }}/{{ item.domain }}.conf"
+  notify:
+    nginx restart
+
+- name: enable sites
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ item.domain }}.conf"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ item.domain }}.conf"
+    state: link
+  notify:
+    nginx restart

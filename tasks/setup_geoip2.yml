@@ -1,0 +1,55 @@
+- name: install geoip2 modules
+  apt:
+    name:
+      - libnginx-mod-http-geoip2
+      - libnginx-mod-stream-geoip2
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure geodata db dir exists
+  file:
+    path: "{{ nginx_geodb_dir }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+
+- name: Download asn db
+  get_url:
+    url: https://git.io/GeoLite2-ASN.mmdb
+    dest: "{{ nginx_geodb_dir }}/GeoLite2-ASN.mmdb"
+    mode: '0644'
+
+- name: Download city db
+  get_url:
+    url: https://git.io/GeoLite2-City.mmdb
+    dest: "{{ nginx_geodb_dir }}/GeoLite2-City.mmdb"
+    mode: '0644'
+
+- name: Download city db
+  get_url:
+    url: https://git.io/GeoLite2-Country.mmdb
+    dest: "{{ nginx_geodb_dir }}/GeoLite2-Country.mmdb"
+    mode: '0644'
+
+- name: "copy module conf"
+  template:
+    src: 50-mod-http-geoip2.conf.j2
+    dest: "{{ nginx_modules_available_dir }}/50-mod-http-geoip2.conf"
+  notify:
+    nginx restart
+
+- name: enable module
+  file:
+    src: "{{ nginx_modules_available_dir }}/50-mod-http-geoip2.conf"
+    dest: "{{ nginx_modules_enabled_dir }}/50-mod-http-geoip2.conf"
+    state: link
+  notify:
+    nginx restart
+
+- name: "copy module conf"
+  template:
+    src: geoip2.conf.j2
+    dest: "{{ nginx_config_dir }}/geoip2.conf"
+  notify:
+    nginx restart
+
