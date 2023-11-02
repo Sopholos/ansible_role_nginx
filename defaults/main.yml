@@ -6,7 +6,7 @@ nginx_site_configs:
       - name: default
         path: /
         rewrite_rules:
-          - regex:
+          - regex: ^(.+\.)+agrohistory.com
             url:
             flag:
         proxy_headers:

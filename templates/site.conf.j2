@@ -13,15 +13,16 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% for location in item.locations %}
     location {{ location.path }} {
 {% if location.default_headers %}
-        include {{nginx_default_headers_file}};
+        include {{ nginx_default_headers_file }};
 {% endif %}
-{% for rule in item.rewrite_rules %}
-        rewrite rule.regex rule.url rule.flag;
+{% for rule in location.rewrite_rules %}
+        rewrite {{ rule.regex }} {{ rule.url }} {{ rule.flag | default (omit) }};
 {% endfor %}
-{% for header in item.proxy_headers %}
-        proxy_set_header header.name header.value;
-{% endfor %}
+{% for header in location.proxy_headers %}
+        proxy_set_header {{ header.name }} {{ header.value }};
     }
+{% endfor %}
+
 {% endfor %}
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
