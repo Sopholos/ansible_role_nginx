@@ -5,8 +5,8 @@ server {
     server_name _;
 {% endif %}
 
-access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default (omit) }};
-error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default (omit) }};
+access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
+error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
 {% if item.root_path is defined %}
     root   {{item.root_path}};
 {% endif %}
@@ -16,7 +16,7 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
         include {{ nginx_default_headers_file }};
 {% endif %}
 {% for rule in location.rewrite_rules %}
-        rewrite {{ rule.regex }} {{ rule.url }} {{ rule.flag | default (omit) }};
+        rewrite {{ rule.regex }} {{ rule.url }} {{ rule.flag | default ("") }};
 {% endfor %}
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
@@ -33,11 +33,19 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
     gzip_min_length 500;
 
 {% if not domain_ssl.stat.exists %}
-    listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' else omit }}_server;
+{% if item.domain != 'default' %}
+    listen {{ item.port | default (80) }};
+{% else %}
+    listen {{ item.port | default (80) }} default_server;
+{% endif %}
 {% endif %}
 
 {% if domain_ssl.stat.exists %}
-    listen {{ item.sslport | default (443) }} ssl {{ item.domain if item.domain == 'default' else omit }}_server;
+{% if item.domain != 'default' %}
+    listen {{ item.sslport | default (443) }};
+{% else %}
+    listen {{ item.sslport | default (443) }} ssl default_server;
+{% endif %}
     ssl_certificate {{ nginx_certs_pub_file }};
     ssl_certificate_key {{ nginx_certs_key_file }};
 {% endif %}
@@ -50,7 +58,11 @@ server {
 {% else %}
     server_name _;
 {% endif %}
-   listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' else omit }}_server;
+{% if item.domain != 'default' %}
+    listen {{ item.port | default (80) }};
+{% else %}
+    listen {{ item.port | default (80) }} default_server;
+{% endif %}
     return 404;
 }
 {% endif %}
