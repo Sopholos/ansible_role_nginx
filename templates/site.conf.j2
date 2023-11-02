@@ -33,11 +33,11 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
     gzip_min_length 500;
 
 {% if not domain_ssl.stat.exists %}
-    listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' }}_server;
+    listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' else omit }}_server;
 {% endif %}
 
 {% if domain_ssl.stat.exists %}
-    listen {{ item.sslport | default (443) }} ssl {{ item.domain if item.domain == 'default' }}_server;
+    listen {{ item.sslport | default (443) }} ssl {{ item.domain if item.domain == 'default' else omit }}_server;
     ssl_certificate {{ nginx_certs_pub_file }};
     ssl_certificate_key {{ nginx_certs_key_file }};
 {% endif %}
@@ -50,7 +50,7 @@ server {
 {% else %}
     server_name _;
 {% endif %}
-   listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' }}_server;
+   listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' else omit }}_server;
     return 404;
 }
 {% endif %}
