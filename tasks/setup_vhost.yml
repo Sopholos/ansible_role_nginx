@@ -1,6 +1,6 @@
 - name: check if exists letsencrypt cert
   stat:
-    path: "{{ nginx_certs_path }}/{{ item.domain }}/server.crt"
+    path: "{{ nginx_certs_pub_file }}"
   register: domain_ssl
 
 - name: "config virtual domain {{ item.domain }}"

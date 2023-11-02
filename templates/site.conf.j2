@@ -1,18 +1,28 @@
 server {
+{% if item.domain != 'default' %}
     server_name  {{ item.domain }};
+{% else %}
+    server_name _;
+{% endif %}
 
-access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.json.log json_log;
-access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log extended;
-error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log;
-client_max_body_size 50m;
+access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default (omit) }};
+error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default (omit) }};
 {% if item.root_path is defined %}
     root   {{item.root_path}};
 {% endif %}
-{% if item.locations == 'default' %}
-    include /etc/nginx/snippets/locations_{{item.locations}}.conf;
-{% else %}
-    include /etc/nginx/snippets/locations_{{item.upstream}}.conf;
+{% for location in item.locations %}
+    location {{ location.path }} {
+{% if location.default_headers %}
+        include {{nginx_default_headers_file}};
 {% endif %}
+{% for rule in item.rewrite_rules %}
+        rewrite rule.regex rule.url rule.flag;
+{% endfor %}
+{% for header in item.proxy_headers %}
+        proxy_set_header header.name header.value;
+{% endfor %}
+    }
+{% endfor %}
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   /usr/share/nginx/html;
@@ -22,22 +32,24 @@ client_max_body_size 50m;
     gzip_min_length 500;
 
 {% if not domain_ssl.stat.exists %}
-    listen {{ item.port | default (80) }};
+    listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' }}_server;
 {% endif %}
 
 {% if domain_ssl.stat.exists %}
-    listen 443 ssl;
-    ssl_certificate ;
-    ssl_certificate_key ;
+    listen {{ item.sslport | default (443) }} ssl {{ item.domain if item.domain == 'default' }}_server;
+    ssl_certificate {{ nginx_certs_pub_file }};
+    ssl_certificate_key {{ nginx_certs_key_file }};
 {% endif %}
 }
 {% if domain_ssl.stat.exists %}
 server {
-    if ($host = {{ item.domain }}) {
-        return 301 https://$host$request_uri;
-    }
+    return 301 https://$host$request_uri;
+{% if item.domain != 'default' %}
     server_name  {{ item.domain }};
-   listen 80;
+{% else %}
+    server_name _;
+{% endif %}
+   listen {{ item.port | default (80) }} {{ item.domain if item.domain == 'default' }}_server;
     return 404;
 }
 {% endif %}

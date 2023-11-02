@@ -21,6 +21,13 @@
     owner: "{{ nginx_system_user }}"
     group: "{{ nginx_system_group }}"
 
+- name: setup default headers
+  template:
+    src: default_headers.conf.j2
+    dest: "{{ nginx_default_headers_file }}"
+  notify:
+    nginx restart
+
 - name: setup log formats
   template:
     src: log_format.conf.j2
