@@ -27,10 +27,11 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endif %}
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
+{% endfor %}
     }
 {% endfor %}
 
-{% endfor %}
+
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   /usr/share/nginx/html;
