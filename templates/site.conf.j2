@@ -66,11 +66,8 @@ server {
 {% else %}
     server_name _;
 {% endif %}
-{% if item.domain != 'default' %}
     listen {{ item.port | default (80) }};
-{% else %}
-    listen {{ item.port | default (80) }} default_server;
-{% endif %}
+
     return 404;
 }
 {% endif %}
