@@ -1,4 +1,4 @@
-- name: check if exists letsencrypt cert
+- name: check if exists  certs
   stat:
     path: "{{ nginx_certs_pub_file }}"
   register: domain_ssl

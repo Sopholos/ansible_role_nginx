@@ -28,6 +28,13 @@
   notify:
     nginx restart
 
+- name: setup map domains
+  template:
+    src: map_domains.conf.j2
+    dest: "{{ nginx_config_dir }}/map_domains.conf"
+  notify:
+    nginx restart
+
 - name: setup log formats
   template:
     src: log_format.conf.j2

@@ -13,6 +13,7 @@ nginx_site_configs:
           - name:
             value:
         default_headers: true
+        proxy_pass: "local"
     access_log_format:
     error_log_format:
 

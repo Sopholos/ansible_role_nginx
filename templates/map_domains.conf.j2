@@ -1,0 +1,3 @@
+map $http_host $local_domain {
+    "~*^(.+\.)+agrohistory.com(.*)$" $1.agrohistory.local
+}
