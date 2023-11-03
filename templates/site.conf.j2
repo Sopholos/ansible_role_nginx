@@ -22,7 +22,7 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% if location.proxy_pass == 'local' %}
         proxy_pass "http://$local_domain";
 {% else %}
-        proxy_pass "{{ location.proxy_pass }}"
+        proxy_pass "{{ location.proxy_pass }}";
 {% endif %}
 {% endif %}
 {% for header in location.proxy_headers %}
