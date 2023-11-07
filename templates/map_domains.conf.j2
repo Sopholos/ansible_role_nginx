@@ -1,5 +1,5 @@
 map $http_host $local_domain {
-    "~*^(.+\.)+agrohistory.com(.*)$" $1.agrohistory.local;
+    "~^(.+\.)+agrohistory.com$" $1agrohistory.local;
 }
 
 map $local_domain $local_scheme {
