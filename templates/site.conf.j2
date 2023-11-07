@@ -4,7 +4,7 @@ server {
 {% else %}
     server_name _;
 {% endif %}
-
+client_max_body_size {{ nginx_max_body_size }};
 access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
 error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
 {% if item.root_path is defined %}
@@ -20,13 +20,16 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endfor %}
 {% if location.proxy_pass is defined %}
 {% if location.proxy_pass == 'local' %}
-        proxy_pass "http://$local_domain";
+        proxy_pass "$local_scheme$local_domain";
 {% else %}
         proxy_pass "{{ location.proxy_pass }}";
 {% endif %}
 {% endif %}
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
+{% endfor %}
+{% for option in location.options %}
+        proxy_set_header {{ option.name }} {{ option.value }};
 {% endfor %}
     }
 {% endfor %}

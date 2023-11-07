@@ -14,8 +14,10 @@ nginx_site_configs:
             value:
         default_headers: true
         proxy_pass: "local"
+        options: []
     access_log_format:
     error_log_format:
+
 
 
 
@@ -31,6 +33,7 @@ nginx_config_dir: /etc/nginx/conf.d
 nginx_default_headers_file: /etc/nginx/snippets/default_headers.conf
 nginx_system_user: www-data
 nginx_system_group: www-data
+nginx_dns_resolver: "8.8.8.8"
 
 nginx_upstreams: []
 
@@ -39,3 +42,4 @@ nginx_module_geoip2_enabled: false
 nginx_geodb_dir: /usr/share/GeoIP
 
 nginx_cache_path: /var/lib/nginx/cache_zone
+nginx_max_body_size: 10m

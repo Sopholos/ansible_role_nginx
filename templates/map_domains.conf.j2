@@ -1,3 +1,9 @@
 map $http_host $local_domain {
     "~*^(.+\.)+agrohistory.com(.*)$" $1.agrohistory.local;
 }
+
+map $local_domain $local_scheme {
+        default "http://";
+}
+
+resolver {{ nginx_dns_resolver }};
