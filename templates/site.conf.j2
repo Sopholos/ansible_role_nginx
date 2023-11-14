@@ -57,8 +57,8 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% else %}
     listen {{ item.sslport | default (443) }} ssl default_server;
 {% endif %}
-    ssl_certificate {{ nginx_certs_pub_file }};
-    ssl_certificate_key {{ nginx_certs_key_file }};
+    ssl_certificate {{ item.certs_pub_file }};
+    ssl_certificate_key {{ item.certs_key_file }};
 {% endif %}
 }
 {% if domain_ssl.stat.exists %}
