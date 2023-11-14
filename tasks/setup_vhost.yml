@@ -2,7 +2,7 @@
 - name: check if exists  certs
   stat:
     path: "{{ item.certs_pub_file }}"
-  register: item.domain_ssl
+  register: domain_ssl
 
 - name: "config virtual domain {{ item.domain }}"
   template:
