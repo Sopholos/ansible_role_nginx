@@ -15,6 +15,8 @@ nginx_site_configs:
         default_headers: true
         proxy_pass: "local"
         options: []
+    certs_pub_file: "{{ nginx_certs_pub_file }}"
+    certs_key_file: "{{ nginx_certs_key_file }}"
     access_log_format:
     error_log_format:
 

@@ -4,7 +4,3 @@
     name: nginx
     state: restarted
 
-- name: php-fpm reload
-  systemd:
-    name: php{{ nginx_php_version }}-fpm
-    state: reloaded

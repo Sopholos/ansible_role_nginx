@@ -1,3 +1,4 @@
+---
 - name: install geoip2 modules
   apt:
     name:
