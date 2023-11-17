@@ -1,5 +1,6 @@
 map $http_host $local_domain {
-    "~^(.+\.)+agrohistory.com$" $1agrohistory.local;
+{% for map in nginx_map_domains %}
+    "~^(.+\.)+{{ map.ext_domain }}$" $1{{ map.local_domain }};
 }
 
 map $local_domain $local_scheme {
