@@ -1,0 +1,50 @@
+
+nginx_site_configs:
+  - domain: "site.example.com"
+    root_path: /var/www/site
+    locations:
+      - name: default
+        path: /
+        rewrite_rules:
+          - regex: ^(.+\.)+example.com
+            url:
+            flag:
+        proxy_headers:
+          - name:
+            value:
+        default_headers: true
+        proxy_pass: "local"
+        options: []
+    certs_pub_file: "{{ nginx_certs_pub_file }}"
+    certs_key_file: "{{ nginx_certs_key_file }}"
+    access_log_format:
+    error_log_format:
+
+
+
+nginx_map_domains:
+  - ext_domain: site.com
+    local_domain: site.local
+
+nginx_sites_available_dir: /etc/nginx/sites-available
+nginx_sites_enabled_dir: /etc/nginx/sites-enabled
+nginx_modules_available_dir: /etc/nginx/modules-available
+nginx_modules_enabled_dir: /etc/nginx/modules-enabled
+nginx_certs_path: /etc/nginx/ssl/
+nginx_certs_pub_file: /etc/nginx/ssl/server.crt
+nginx_certs_key_file: /etc/nginx/ssl/server.key
+nginx_logs_dir: /var/log/nginx
+nginx_config_dir: /etc/nginx/conf.d
+nginx_default_headers_file: /etc/nginx/snippets/default_headers.conf
+nginx_system_user: www-data
+nginx_system_group: www-data
+nginx_dns_resolver: "8.8.8.8"
+
+nginx_upstreams: []
+
+nginx_module_geoip2_enabled: false
+
+nginx_geodb_dir: /usr/share/GeoIP
+
+nginx_cache_path: /var/lib/nginx/cache_zone
+nginx_max_body_size: 10m

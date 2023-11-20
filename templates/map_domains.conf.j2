@@ -1,0 +1,12 @@
+map $http_host $local_domain {
+{% for map in nginx_map_domains %}
+    "~^(.+\.)+{{ map.ext_domain }}$" $1{{ map.local_domain }};
+}
+
+map $local_domain $local_scheme {
+        default "http://";
+}
+
+{% if nginx_dns_resolver is defined %}
+resolver {{ nginx_dns_resolver }};
+{% endif %}
