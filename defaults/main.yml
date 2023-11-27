@@ -1,4 +1,7 @@
-
+nginx_default_headers: []
+#example:
+#  - name: "HTTP_PRX_HOST"
+#    value: $http_host
 nginx_site_configs:
   - domain: "site.example.com"
     root_path: /var/www/site
@@ -9,9 +12,10 @@ nginx_site_configs:
           - regex: ^(.+\.)+example.com
             url:
             flag:
-        proxy_headers:
-          - name:
-            value:
+        proxy_headers: []
+#example:
+#          - name: "EXTRA_HEADER"
+#            value: $http_extra
         default_headers: true
         proxy_pass: "local"
         options: []
