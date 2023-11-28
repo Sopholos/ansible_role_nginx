@@ -4,12 +4,22 @@ server {
 {% else %}
     server_name _;
 {% endif %}
+
+{% if item.www_redirect is true %}
+if ($host ~ ^www\.(?<domain>.+)$) {
+    return  307 $scheme://$domain$request_uri;
+}
+{% endif %}
+
 client_max_body_size {{ nginx_max_body_size }};
+
 access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
 error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
+
 {% if item.root_path is defined %}
     root   {{item.root_path}};
 {% endif %}
+
 {% for location in item.locations %}
     location {{ location.path }} {
 {% if location.default_headers %}
@@ -33,7 +43,6 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endfor %}
     }
 {% endfor %}
-
 
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
