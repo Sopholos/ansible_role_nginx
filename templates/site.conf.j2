@@ -5,7 +5,7 @@ server {
     server_name _;
 {% endif %}
 
-{% if item.www_redirect is true %}
+{% if item.www_redirect %}
 if ($host ~ ^www\.(?<domain>.+)$) {
     return  307 $scheme://$domain$request_uri;
 }
