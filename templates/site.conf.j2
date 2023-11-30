@@ -35,15 +35,21 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
         proxy_pass "{{ location.proxy_pass }}";
 {% endif %}
 {% endif %}
+{% if location.proxy_headers is defined and location.proxy_headers|length >0 %}
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
 {% endfor %}
+{% endif %}
+{% if location.response_headers is defined and location.response_headers|length >0 %}
 {% for header in location.response_headers %}
         add_header {{ header.name }} {{ header.value }};
 {% endfor %}
+{% endif %}
+{% if location.options is defined and location.options|length >0 %}
 {% for option in location.options %}
         {{ option.name }} {{ option.value }};
 {% endfor %}
+{% endif %}
     }
 {% endfor %}
 
