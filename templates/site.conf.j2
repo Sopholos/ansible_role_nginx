@@ -1,6 +1,6 @@
 server {
 {% if item.domain != 'default' %}
-    server_name  {{ item.domain }} {{ item.add_domains | split (' ') }};
+    server_name  {{ item.domain }} {{ item.add_domains | join (' ') }};
 {% else %}
     server_name _;
 {% endif %}
