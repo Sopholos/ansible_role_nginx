@@ -1,3 +1,6 @@
 {% for header in nginx_default_headers %}
 proxy_set_header {{ header.name }} {{ header_value }};
 {% endfor %}
+{% for header in nginx_default_response_headers %}
+add_header {{ header.name }} {{ header_value }};
+{% endfor %}

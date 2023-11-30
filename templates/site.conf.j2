@@ -1,6 +1,6 @@
 server {
 {% if item.domain != 'default' %}
-    server_name  {{ item.domain }};
+    server_name  {{ item.domain }} {{ item.add_domains | split (' ') }};
 {% else %}
     server_name _;
 {% endif %}
@@ -38,8 +38,11 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
 {% endfor %}
+{% for header in location.response_headers %}
+        add_header {{ header.name }} {{ header.value }};
+{% endfor %}
 {% for option in location.options %}
-        proxy_set_header {{ option.name }} {{ option.value }};
+        {{ option.name }} {{ option.value }};
 {% endfor %}
     }
 {% endfor %}
