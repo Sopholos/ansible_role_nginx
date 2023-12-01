@@ -19,6 +19,7 @@ map $local_domain $local_port {
 {% for map in nginx_map_domains_lports %}
     {{ map.local_domain }} {{ map.local_port }};
 {% endfor %}
+{% endif %}
  }
 
 {% if nginx_dns_resolver is defined %}
