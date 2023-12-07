@@ -47,7 +47,7 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endif %}
 {% if location.proxy_cookie_flags is defined and location.proxy_cookie_flags | length >0 %}
 {% for cookie in location.proxy_cookie_flags %}
-        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flag }};
+        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flags }};
 {% endfor %}
 {% endif %}
 {% if location.options is defined and location.options|length >0 %}
@@ -60,7 +60,7 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 
 {% if item.proxy_cookie_flags is defined and item.proxy_cookie_flags | length >0 %}
 {% for cookie in item.proxy_cookie_flags %}
-        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flag }};
+        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flags }};
 {% endfor %}
 {% endif %}
 
