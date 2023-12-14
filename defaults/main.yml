@@ -43,7 +43,7 @@ nginx_default_headers_file: /etc/nginx/snippets/default_headers.conf
 nginx_system_user: www-data
 nginx_system_group: www-data
 nginx_dns_resolver: "8.8.8.8"
-nginx_distr_version: "1.24.0"
+nginx_distr_version: "1.24*"
 
 nginx_upstreams: []
 
