@@ -6,9 +6,9 @@
         url: "https://nginx.org/keys/nginx_signing.key"
         keyring: "/etc/apt/trusted.gpg.d/nginx.gpg"
         state: present
-    - name: gitlab repo
+    - name: nginx repo
       apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/nginx.gpg] http://nginx.org/packages/debian {{ ansible_distribution_release }} nginx"
+        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/nginx.gpg] https://nginx.org/packages/debian {{ ansible_distribution_release }} nginx"
         state: present
   when: ansible_os_family == "Debian"
 
