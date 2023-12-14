@@ -1,9 +1,6 @@
 ---
 - name: install nginx
-  apt:
-    name: "nginx"
-    update_cache: yes
-  when: ansible_os_family == "Debian"
+  include_tasks: install.yml
 
 - name: Ensure data directories for virtual sites exists
   file:
