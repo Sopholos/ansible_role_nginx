@@ -1,4 +1,4 @@
-{% for key,value in nginx_config_basic.iteritems() %}
+{% for key,value in nginx_config_basic.items() %}
 {{ key }} {{ value }};
 {% endfor %}
 
@@ -10,7 +10,7 @@ events {
 
 http {
 
-{% for key, value in nginx_config_http.iteritems() %}
+{% for key, value in nginx_config_http.items() %}
     {{ key }}  {{ value }};
 {% endfor %}
 
