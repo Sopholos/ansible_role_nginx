@@ -23,7 +23,7 @@ nginx_geodb_dir: /usr/share/GeoIP
 
 nginx_cache_path: /var/lib/nginx/cache_zone
 nginx_max_body_size: 10m
-
+nginx_systemd_path: /lib/systemd/system
 
 nginx_config_basic:
   user: "{{ nginx_system_user }}"

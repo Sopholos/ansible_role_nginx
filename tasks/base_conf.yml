@@ -1,4 +1,15 @@
 ---
+- name: systemd override directory
+  file:
+    state: directory
+    path: "{{ nginx_systemd_path }}/nginx.service.d"
+
+- name: setup systemd override
+  template:
+    src: systemd.j2
+    dest: "{{ nginx_systemd_path }}/nginx.service.d/override.conf"
+  notify: nginx restart
+
 - name: Ensure cache dir exists
   file:
     path: "{{ nginx_cache_path  }}"
