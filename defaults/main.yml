@@ -25,12 +25,14 @@ nginx_cache_path: /var/lib/nginx/cache_zone
 nginx_max_body_size: 10m
 nginx_systemd_path: /lib/systemd/system
 
-nginx_config_basic:
+nginx_config:
   user: "{{ nginx_system_user }}"
   worker_processes: "auto"
   error_log: "/var/log/nginx/error.log notice"
   pid: "/var/run/nginx.pid"
-  include: "/etc/nginx/modules-enabled/*.conf"
+
+nginx_config_includes:
+  - "/etc/nginx/modules-enabled/*.conf"
 
 nginx_worker_connections: 1024
 nginx_config_http:
@@ -44,6 +46,11 @@ nginx_config_http:
                 '\"$http_user_agent\" \"$http_x_forwarded_for\"'"
   sendfile: "on"
   keepalive_timeout: 65
+
+nginx_config_http_includes:
+  - "/etc/nginx/mime.types"
+  - "/etc/nginx/conf.d/*.conf"
+  - "/etc/nginx/sites-enabled/*.conf"
 
 nginx_site_configs:
   - domain: "site.example.com"
