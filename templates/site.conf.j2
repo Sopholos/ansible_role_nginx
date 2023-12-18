@@ -11,8 +11,10 @@ if ($host ~ ^www\.(?<domain>.+)$) {
 }
 {% endif %}
 
-{% if item.max_body_size is defined %}
-client_max_body_size {{ item.max_body_size }};
+{% if item.options is defined and item.options | length >0 %}
+{% for key,value in item.options.items() %}
+{{ key }} {{ value }};
+{% endfor %}
 {% endif %}
 
 access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
@@ -53,8 +55,8 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endfor %}
 {% endif %}
 {% if location.options is defined and location.options|length >0 %}
-{% for option in location.options %}
-        {{ option.name }} {{ option.value }};
+{% for key,value in item.options.items() %}
+        {{ key }} {{ value }};
 {% endfor %}
 {% endif %}
     }
