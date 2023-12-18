@@ -50,7 +50,7 @@
 - name: "copy module conf"
   template:
     src: geoip2.conf.j2
-    dest: "{{ nginx_config_dir }}/geoip2.conf"
+    dest: "{{ nginx_conf_adds_dir }}/geoip2.conf"
   notify:
     nginx restart
 

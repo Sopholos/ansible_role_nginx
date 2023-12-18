@@ -11,7 +11,9 @@ if ($host ~ ^www\.(?<domain>.+)$) {
 }
 {% endif %}
 
-client_max_body_size {{ nginx_max_body_size }};
+{% if item.max_body_size is defined %}
+client_max_body_size {{ item.max_body_size }};
+{% endif %}
 
 access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
 error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
