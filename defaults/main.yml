@@ -36,14 +36,14 @@ nginx_config_includes:
 
 nginx_worker_connections: 1024
 nginx_config_http:
+  log_format: "main  '$remote_addr - $remote_user [$time_local] \"$request\" '
+                '$status $body_bytes_sent \"$http_referer\" '
+                '\"$http_user_agent\" \"$http_x_forwarded_for\"'"
   access_log: "/var/log/nginx/access.log  main"
   default_type: "application/octet-stream"
   include: "/etc/nginx/mime.types"
   include: "/etc/nginx/conf.d/*.conf"
   include: "/etc/nginx/sites-enabled/*.conf"
-  log_format: "main  '$remote_addr - $remote_user [$time_local] \"$request\" '
-                '$status $body_bytes_sent \"$http_referer\" '
-                '\"$http_user_agent\" \"$http_x_forwarded_for\"'"
   sendfile: "on"
   keepalive_timeout: 65
 
@@ -82,3 +82,5 @@ nginx_default_headers: []
 #example:
 #  - name: "HTTP_PRX_HOST"
 #    value: $http_host
+
+nginx_systemd_nofile: 65535
