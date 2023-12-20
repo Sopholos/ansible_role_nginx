@@ -1,3 +1,56 @@
+---
+nginx_sites_available_dir: /etc/nginx/sites-available
+nginx_sites_enabled_dir: /etc/nginx/sites-enabled
+nginx_modules_available_dir: /etc/nginx/modules-available
+nginx_modules_enabled_dir: /etc/nginx/modules-enabled
+nginx_certs_path: /etc/nginx/ssl/
+nginx_certs_pub_file: /etc/nginx/ssl/server.crt
+nginx_certs_key_file: /etc/nginx/ssl/server.key
+nginx_logs_dir: /var/log/nginx
+nginx_conf_dir: /etc/nginx
+nginx_conf_adds_dir: /etc/nginx/conf.d
+nginx_default_headers_file: /etc/nginx/snippets/default_headers.conf
+nginx_system_user: www-data
+nginx_system_group: www-data
+nginx_dns_resolver: "8.8.8.8"
+nginx_distr_version: "1.24*"
+
+nginx_upstreams: []
+
+nginx_module_geoip2_enabled: false
+
+nginx_geodb_dir: /usr/share/GeoIP
+
+nginx_cache_path: /var/lib/nginx/cache_zone
+nginx_max_body_size: 10m
+nginx_systemd_path: /lib/systemd/system
+
+nginx_config:
+  user: "{{ nginx_system_user }}"
+  worker_processes: "auto"
+  error_log: "/var/log/nginx/error.log notice"
+  pid: "/var/run/nginx.pid"
+
+nginx_config_includes:
+  - "/etc/nginx/modules-enabled/*.conf"
+
+nginx_worker_connections: 1024
+nginx_config_http:
+  log_format: "main  '$remote_addr - $remote_user [$time_local] \"$request\" '
+                '$status $body_bytes_sent \"$http_referer\" '
+                '\"$http_user_agent\" \"$http_x_forwarded_for\"'"
+  access_log: "/var/log/nginx/access.log  main"
+  default_type: "application/octet-stream"
+  include: "/etc/nginx/mime.types"
+  include: "/etc/nginx/conf.d/*.conf"
+  include: "/etc/nginx/sites-enabled/*.conf"
+  sendfile: "on"
+  keepalive_timeout: 65
+
+nginx_config_http_includes:
+  - "/etc/nginx/mime.types"
+  - "/etc/nginx/conf.d/*.conf"
+  - "/etc/nginx/sites-enabled/*.conf"
 
 nginx_site_configs:
   - domain: "site.example.com"
@@ -9,9 +62,10 @@ nginx_site_configs:
           - regex: ^(.+\.)+example.com
             url:
             flag:
-        proxy_headers:
-          - name:
-            value:
+        proxy_headers: []
+#example:
+#          - name: "EXTRA_HEADER"
+#            value: $http_extra
         default_headers: true
         proxy_pass: "local"
         options: []
@@ -20,31 +74,13 @@ nginx_site_configs:
     access_log_format:
     error_log_format:
 
-
-
 nginx_map_domains:
   - ext_domain: site.com
     local_domain: site.local
 
-nginx_sites_available_dir: /etc/nginx/sites-available
-nginx_sites_enabled_dir: /etc/nginx/sites-enabled
-nginx_modules_available_dir: /etc/nginx/modules-available
-nginx_modules_enabled_dir: /etc/nginx/modules-enabled
-nginx_certs_path: /etc/nginx/ssl/
-nginx_certs_pub_file: /etc/nginx/ssl/server.crt
-nginx_certs_key_file: /etc/nginx/ssl/server.key
-nginx_logs_dir: /var/log/nginx
-nginx_config_dir: /etc/nginx/conf.d
-nginx_default_headers_file: /etc/nginx/snippets/default_headers.conf
-nginx_system_user: www-data
-nginx_system_group: www-data
-nginx_dns_resolver: "8.8.8.8"
+nginx_default_headers: []
+#example:
+#  - name: "HTTP_PRX_HOST"
+#    value: $http_host
 
-nginx_upstreams: []
-
-nginx_module_geoip2_enabled: false
-
-nginx_geodb_dir: /usr/share/GeoIP
-
-nginx_cache_path: /var/lib/nginx/cache_zone
-nginx_max_body_size: 10m
+nginx_systemd_nofile: 65535

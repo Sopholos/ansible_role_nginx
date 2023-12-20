@@ -1,0 +1,19 @@
+---
+- name: install repo for nginx
+  block:
+    - name: nginx apt key
+      apt_key:
+        url: "https://nginx.org/keys/nginx_signing.key"
+        keyring: "/etc/apt/trusted.gpg.d/nginx.gpg"
+        state: present
+    - name: nginx repo
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/nginx.gpg] https://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
+        state: present
+  when: ansible_os_family == "Debian"
+
+- name: install nginx
+  apt:
+    name: "nginx={{ nginx_distr_version }}"
+    update_cache: yes
+  when: ansible_os_family == "Debian"

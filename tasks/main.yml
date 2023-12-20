@@ -1,9 +1,6 @@
 ---
 - name: install nginx
-  apt:
-    name: "nginx"
-    update_cache: yes
-  when: ansible_os_family == "Debian"
+  include_tasks: install.yml
 
 - name: Ensure data directories for virtual sites exists
   file:
@@ -15,40 +12,8 @@
   with_items:
     "{{ nginx_site_configs }}"
 
-- name: Ensure cache dir exists
-  file:
-    path: "{{ nginx_cache_path  }}"
-    state: directory
-    owner: "{{ nginx_system_user }}"
-    group: "{{ nginx_system_group }}"
-
-- name: setup default headers
-  template:
-    src: default_headers.conf.j2
-    dest: "{{ nginx_default_headers_file }}"
-  notify:
-    nginx restart
-
-- name: setup map domains
-  template:
-    src: map_domains.conf.j2
-    dest: "{{ nginx_config_dir }}/map_domains.conf"
-  notify:
-    nginx restart
-
-- name: setup log formats
-  template:
-    src: log_format.conf.j2
-    dest: "{{ nginx_config_dir }}/log_format.conf"
-  notify:
-    nginx restart
-
-- name: setup proxy cache
-  template:
-    src: proxy_cache.conf.j2
-    dest: "{{ nginx_config_dir }}/proxy_cache.conf"
-  notify:
-    nginx restart
+- name: configure nginx
+  include_tasks: base_conf.yml
 
 - name: setup geoip2 module
   include_tasks: setup_geoip2.yml

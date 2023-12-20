@@ -1,3 +1,6 @@
-proxy_set_header HTTP_PRX_HOST $http_host;
-proxy_set_header HTTP_PRX_ORIGINAL_HOST $http_host;
-proxy_set_header HTTP_PRX_ORIGINAL_URL $scheme://$host$request_uri;
+{% for header in nginx_default_headers %}
+proxy_set_header "{{ header.name }}" "{{ header.value }}";
+{% endfor %}
+{% for header in nginx_default_response_headers %}
+add_header "{{ header.name }}" "{{ header.value }}";
+{% endfor %}

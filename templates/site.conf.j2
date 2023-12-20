@@ -1,15 +1,29 @@
 server {
 {% if item.domain != 'default' %}
-    server_name  {{ item.domain }};
+    server_name  {{ item.domain }} {{ item.add_domains | join (' ') }};
 {% else %}
     server_name _;
 {% endif %}
-client_max_body_size {{ nginx_max_body_size }};
+
+{% if item.www_redirect %}
+if ($host ~ ^www\.(?<domain>.+)$) {
+    return  307 $scheme://$domain$request_uri;
+}
+{% endif %}
+
+{% if item.options is defined and item.options | length >0 %}
+{% for key,value in item.options.items() %}
+{{ key }} {{ value }};
+{% endfor %}
+{% endif %}
+
 access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
 error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
+
 {% if item.root_path is defined %}
     root   {{item.root_path}};
 {% endif %}
+
 {% for location in item.locations %}
     location {{ location.path }} {
 {% if location.default_headers %}
@@ -20,20 +34,39 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endfor %}
 {% if location.proxy_pass is defined %}
 {% if location.proxy_pass == 'local' %}
-        proxy_pass "$local_scheme$local_domain";
+        proxy_pass "$local_scheme$local_domain:$local_port";
 {% else %}
         proxy_pass "{{ location.proxy_pass }}";
 {% endif %}
 {% endif %}
+{% if location.proxy_headers is defined and location.proxy_headers | length >0 %}
 {% for header in location.proxy_headers %}
         proxy_set_header {{ header.name }} {{ header.value }};
 {% endfor %}
-{% for option in location.options %}
-        proxy_set_header {{ option.name }} {{ option.value }};
+{% endif %}
+{% if location.response_headers is defined and location.response_headers | length >0 %}
+{% for header in location.response_headers %}
+        add_header {{ header.name }} {{ header.value }};
 {% endfor %}
+{% endif %}
+{% if location.proxy_cookie_flags is defined and location.proxy_cookie_flags | length >0 %}
+{% for cookie in location.proxy_cookie_flags %}
+        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flags }};
+{% endfor %}
+{% endif %}
+{% if location.options is defined and location.options|length >0 %}
+{% for key,value in item.options.items() %}
+        {{ key }} {{ value }};
+{% endfor %}
+{% endif %}
     }
 {% endfor %}
 
+{% if item.proxy_cookie_flags is defined and item.proxy_cookie_flags | length >0 %}
+{% for cookie in item.proxy_cookie_flags %}
+        proxy_cookie_flags {{ cookie.cookie }} {{ cookie.flags }};
+{% endfor %}
+{% endif %}
 
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {

@@ -1,0 +1,53 @@
+---
+- name: systemd override directory
+  file:
+    state: directory
+    path: "{{ nginx_systemd_path }}/nginx.service.d"
+
+- name: setup systemd override
+  template:
+    src: systemd.j2
+    dest: "{{ nginx_systemd_path }}/nginx.service.d/override.conf"
+  notify: nginx restart
+
+- name: Ensure cache dir exists
+  file:
+    path: "{{ nginx_cache_path  }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+
+- name: setup main config
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_conf_dir }}/nginx.conf"
+  notify:
+    nginx reload
+
+- name: setup default headers
+  template:
+    src: default_headers.conf.j2
+    dest: "{{ nginx_default_headers_file }}"
+  notify:
+    nginx reload
+
+- name: setup map domains
+  template:
+    src: map_domains.conf.j2
+    dest: "{{ nginx_conf_adds_dir }}/map_domains.conf"
+  notify:
+    nginx reload
+
+- name: setup log formats
+  template:
+    src: log_format.conf.j2
+    dest: "{{ nginx_conf_adds_dir }}/log_format.conf"
+  notify:
+    nginx reload
+
+- name: setup proxy cache
+  template:
+    src: proxy_cache.conf.j2
+    dest: "{{ nginx_conf_adds_dir }}/proxy_cache.conf"
+  notify:
+    nginx reload
