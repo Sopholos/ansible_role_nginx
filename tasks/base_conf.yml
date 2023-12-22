@@ -4,6 +4,11 @@
     state: directory
     path: "{{ nginx_systemd_path }}/nginx.service.d"
 
+- name: ensure snippets directory exists
+  file:
+    path: "{{ nginx_conf_dir }}/snippets"
+    state: directory
+
 - name: setup systemd override
   template:
     src: systemd.j2
