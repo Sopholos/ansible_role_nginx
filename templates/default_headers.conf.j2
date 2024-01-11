@@ -3,7 +3,7 @@
 proxy_set_header "{{ header.name }}" "{{ header.value }}";
 {% endfor %}
 {% endif %}
-{% if nginx_default_responce_headers is defined and nginx_default_responce_headers | length >0 %}
+{% if nginx_default_response_headers is defined and nginx_default_response_headers | length >0 %}
 {% for header in nginx_default_response_headers %}
 add_header "{{ header.name }}" "{{ header.value }}";
 {% endfor %}
