@@ -9,6 +9,8 @@
     when: not item.bundle
   with_items: "{{ nginx_certs }}"
   no_log: yes
+  notify:
+    nginx restart
 
 - name: Copy bundle certs to server
   copy:
@@ -20,6 +22,8 @@
     when: item.bundle
   with_items: "{{ nginx_certs }}"
   no_log: yes
+  notify:
+    nginx restart
 
 - name: Copy key to server
   copy:
@@ -30,3 +34,5 @@
     mode: 0600
   with_items: "{{ nginx_certs }}"
   no_log: yes
+  notify:
+    nginx restart
