@@ -1,4 +1,11 @@
 ---
+- name: Ensure certs dir exists
+  file:
+    path: "{{ nginx_certs_path  }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+
 - name: Copy standalone cert to server
   copy:
     content: "{{ item.crt }}"
