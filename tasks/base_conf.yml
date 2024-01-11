@@ -29,6 +29,38 @@
   notify:
     nginx reload
 
+- name: Copy standalone cert to server
+  copy:
+    content: "{{ item.crt }}"
+    dest: "{{ item.crt_path }}"
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+    mode: 0644
+    when: not item.bundle
+  with_items: "{{ nginx_certs }}"
+  no_log: yes
+
+- name: Copy standalone cert to server
+  copy:
+    content: "{{ item.crt + item.interm_crt + item.ca_crt }}"
+    dest: "{{ item.crt_path }}"
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+    mode: 0644
+    when: item.bundle
+  with_items: "{{ nginx_certs }}"
+  no_log: yes
+
+- name: Copy key to server
+  copy:
+    content: "{{ item.key }}"
+    dest: "{{ item.key_path }}"
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+    mode: 0600
+  with_items: "{{ nginx_certs }}"
+  no_log: yes
+
 - name: setup default headers
   template:
     src: default_headers.conf.j2
