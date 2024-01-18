@@ -41,9 +41,6 @@ nginx_config_http:
                 '\"$http_user_agent\" \"$http_x_forwarded_for\"'"
   access_log: "/var/log/nginx/access.log  main"
   default_type: "application/octet-stream"
-  include: "/etc/nginx/mime.types"
-  include: "/etc/nginx/conf.d/*.conf"
-  include: "/etc/nginx/sites-enabled/*.conf"
   sendfile: "on"
   keepalive_timeout: 65
 
