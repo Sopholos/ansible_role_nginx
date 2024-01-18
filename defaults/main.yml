@@ -71,9 +71,18 @@ nginx_site_configs:
     access_log_format:
     error_log_format:
 
-nginx_map_domains:
-  - ext_domain: site.com
-    local_domain: site.local
+nginx_maps:
+  - rule: "$http_host $local_domain"
+    lines: [ 'site.com site.local' ]
+  
+  - rule: "$local_domain $local_port"
+    lines: [ 'default 80' ]
+  
+  - rule: "$http_host $served_host"
+    lines: [ 'default $http_host' ]
+  
+  - rule: "$local_domain $local_scheme"
+    lines: [ 'default "http://"' ]
 
 nginx_default_headers: []
 #example:
