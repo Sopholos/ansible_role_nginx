@@ -22,6 +22,13 @@
     owner: "{{ nginx_system_user }}"
     group: "{{ nginx_system_group }}"
 
+- name: Ensure proxy cache dir exists
+  file:
+    path: "{{ nginx_proxy_cache_path  }}"
+    state: directory
+    owner: "{{ nginx_system_user }}"
+    group: "{{ nginx_system_group }}"
+
 - name: setup main config
   template:
     src: nginx.conf.j2

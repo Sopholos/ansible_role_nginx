@@ -20,7 +20,7 @@ nginx_upstreams: []
 nginx_module_geoip2_enabled: false
 
 nginx_geodb_dir: /usr/share/GeoIP
-
+nginx_proxy_cache_path: /var/cache/nginx
 nginx_cache_path: /var/lib/nginx/cache_zone
 nginx_max_body_size: 10m
 nginx_systemd_path: /lib/systemd/system

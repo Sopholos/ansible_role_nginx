@@ -55,7 +55,7 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
 {% endfor %}
 {% endif %}
 {% if location.options is defined and location.options|length >0 %}
-{% for key,value in item.options.items() %}
+{% for key,value in location.options.items() %}
         {{ key }} {{ value }};
 {% endfor %}
 {% endif %}
