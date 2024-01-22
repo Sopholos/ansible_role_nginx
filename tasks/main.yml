@@ -18,6 +18,9 @@
   import_tasks: base_conf.yml
   tags: [ config ]
 
+- name: configure certs
+  include_tasks: copy_certs.yml
+
 - name: setup geoip2 module
   import_tasks: setup_geoip2.yml
   when: nginx_module_geoip2_enabled
@@ -31,4 +34,3 @@
   with_items:
     - "{{ nginx_site_configs }}"
   tags: [ config ]
-  

@@ -36,6 +36,8 @@
   notify:
     nginx reload
 
+
+
 - name: setup default headers
   template:
     src: default_headers.conf.j2
