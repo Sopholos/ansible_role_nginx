@@ -1,6 +1,7 @@
 ---
 - name: install nginx
-  include_tasks: install.yml
+  import_tasks: install.yml
+  tags: [ install ]
 
 - name: Ensure data directories for virtual sites exists
   file:
@@ -11,18 +12,25 @@
   when: item.root_path is defined
   with_items:
     "{{ nginx_site_configs }}"
+  tags: [ init ]
 
 - name: configure nginx
-  include_tasks: base_conf.yml
+  import_tasks: base_conf.yml
+  tags: [ config ]
 
 - name: configure certs
   include_tasks: copy_certs.yml
 
 - name: setup geoip2 module
-  include_tasks: setup_geoip2.yml
+  import_tasks: setup_geoip2.yml
   when: nginx_module_geoip2_enabled
+  tags: [ install ]
 
 - name: setup vhosts
-  include_tasks: setup_vhost.yml
+  include_tasks:
+    file: setup_vhost.yml
+    apply:
+      tags: [ config ]
   with_items:
     - "{{ nginx_site_configs }}"
+  tags: [ config ]
