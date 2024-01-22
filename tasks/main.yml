@@ -19,7 +19,8 @@
   tags: [ config ]
 
 - name: configure certs
-  include_tasks: copy_certs.yml
+  import_tasks: copy_certs.yml
+  tags: [ config ]
 
 - name: setup geoip2 module
   import_tasks: setup_geoip2.yml
