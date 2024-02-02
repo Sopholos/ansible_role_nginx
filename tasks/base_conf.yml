@@ -36,7 +36,12 @@
   notify:
     nginx reload
 
-
+- name: "remove {{ nginx_conf_adds_dir }}/default.conf"
+  file:
+    path: "{{ nginx_conf_adds_dir }}/default.conf"
+    state: absent
+  notify:
+    nginx reload
 
 - name: setup default headers
   template:
