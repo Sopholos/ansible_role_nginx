@@ -1,24 +1,8 @@
 ---
-- name: check if exists  certs
+- name: "check if exists {{ item.certs_pub_file }} certs"
   stat:
     path: "{{ item.certs_pub_file }}"
   register: domain_ssl
-
-- name: ensure available sites directory exists
-  file:
-    path: "{{ nginx_sites_available_dir }}"
-    state: directory
-
-- name: ensure enabled sites directory exists
-  file:
-    path: "{{ nginx_sites_enabled_dir }}"
-    state: directory
-
-- name: "Ensure default domain config is absent"
-  file:
-    path: "{{ nginx_sites_enabled_dir }}/default"
-    state: absent
-
 
 - name: "config virtual domain {{ item.domain }}"
   template:
@@ -27,7 +11,7 @@
   notify:
     nginx restart
 
-- name: enable sites
+- name: enable sites {{ item.domain }}
   file:
     src: "{{ nginx_sites_available_dir }}/{{ item.domain }}.conf"
     dest: "{{ nginx_sites_enabled_dir }}/{{ item.domain }}.conf"

@@ -6,9 +6,9 @@ server {
 {% endif %}
 
 {% if item.www_redirect %}
-if ($host ~ ^www\.(?<domain>.+)$) {
-    return  307 $scheme://$domain$request_uri;
-}
+    if ($host ~ ^www\.(?<domain>.+)$) {
+        return  307 $scheme://$domain$request_uri;
+    }
 {% endif %}
 
 {% if item.options is defined and item.options | length >0 %}
@@ -17,8 +17,8 @@ if ($host ~ ^www\.(?<domain>.+)$) {
 {% endfor %}
 {% endif %}
 
-access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
-error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
+    access_log {{ nginx_logs_dir }}/{{ item.domain }}.access.log {{ item.access_log_format | default ("") }};
+    error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_format | default ("") }};
 
 {% if item.root_path is defined %}
     root   {{item.root_path}};
@@ -86,9 +86,9 @@ error_log {{ nginx_logs_dir }}/{{ item.domain }}.error.log {{ item.error_log_for
     ssl_certificate_key {{ item.certs_key_file }};
 {% endif %}
 }
-{% if domain_ssl.stat.exists %}
+{% if domain_ssl.stat.exists and (item.https_redirect | default(true)) %}
 server {
-    return 301 https://$host$request_uri;
+    return 307 https://$host$request_uri;
 {% if item.domain != 'default' %}
     server_name  {{ item.domain }};
 {% else %}

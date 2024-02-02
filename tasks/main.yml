@@ -14,6 +14,23 @@
     "{{ nginx_site_configs }}"
   tags: [ init ]
 
+- block:
+  - name: ensure available sites directory exists
+    file:
+      path: "{{ nginx_sites_available_dir }}"
+      state: directory
+
+  - name: ensure enabled sites directory exists
+    file:
+      path: "{{ nginx_sites_enabled_dir }}"
+      state: directory
+
+  - name: "Ensure default domain config is absent"
+    file:
+      path: "{{ nginx_sites_enabled_dir }}/default"
+      state: absent
+  tags: [ init ]
+
 - name: configure nginx
   import_tasks: base_conf.yml
   tags: [ config ]
