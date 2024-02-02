@@ -68,7 +68,7 @@ server {
 {% endfor %}
 {% endif %}
 
-{% if not domain_ssl.stat.exists %}
+{% if not domain_ssl.stat.exists or not (item.https_redirect | default(true)) %}
 {% if item.domain != 'default' %}
     listen {{ item.port | default (80) }};
 {% else %}
@@ -88,7 +88,7 @@ server {
 }
 {% if domain_ssl.stat.exists and (item.https_redirect | default(true)) %}
 server {
-    return 307 https://$host$request_uri;
+    return 307 https://$host$request_uri";
 {% if item.domain != 'default' %}
     server_name  {{ item.domain }};
 {% else %}
