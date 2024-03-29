@@ -11,6 +11,9 @@ server {
     }
 {% endif %}
 
+{% for return in item.returns %}
+        return {{ return.code }} {{ return.url_text }};
+{% endfor %}
 {% if item.options is defined and item.options | length >0 %}
 {% for key,value in item.options.items() %}
 {{ key }} {{ value }};
@@ -26,6 +29,11 @@ server {
 
 {% for location in item.locations %}
     location {{ location.path }} {
+
+{% for return in location.returns %}
+        return {{ return.code }} {{ return.url_text }};
+{% endfor %}
+
 {% if location.default_headers %}
         include {{ nginx_default_headers_file }};
 {% endif %}
