@@ -12,7 +12,7 @@ server {
 {% endif %}
 {% if item.returns is defined and item.returns | length >0 %}
 {% for return in item.returns %}
-    return {{ return.code }} {{ return.url_text }};
+    return {{ return.code }} {{ return.url_text | default ('') }};
 {% endfor %}
 {% endif %}
 
@@ -33,7 +33,7 @@ server {
     location {{ location.path }} {
 {% if location.returns is defined and location.returns | length >0 %}
 {% for return in location.returns %}
-        return {{ return.code }} {{ return.url_text }};
+        return {{ return.code }} {{ return.url_text | default ('') }};
 {% endfor %}
 {% endif %}
 {% if location.default_headers %}
