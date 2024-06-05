@@ -78,7 +78,7 @@ server {
 {% endfor %}
 {% endif %}
 
-{% if not domain_ssl.stat.exists or  ( item.force_http | default(false) ) %}
+{% if not domain_ssl.stat.exists or  (item.force_http | default(false)) %}
 {% if item.domain != 'default' %}
     listen {{ item.port | default (80) }};
 {% else %}
