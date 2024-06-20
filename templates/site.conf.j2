@@ -98,9 +98,9 @@ server {
 }
 {% if domain_ssl.stat.exists and (item.https_redirect | default(true)) %}
 server {
-    return 307 https://$host$request_uri";
+    return 307 https://$host$request_uri;
 {% if item.domain != 'default' %}
-    server_name  {{ item.domain }};
+    server_name  {{ item.domain }} {{ item.add_domains | join (' ') }};
 {% else %}
     server_name _;
 {% endif %}
