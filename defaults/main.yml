@@ -15,6 +15,7 @@ nginx_system_group: www-data
 nginx_dns_resolver: "8.8.8.8"
 nginx_distr_version: "1.24*"
 nginx_certs: []
+nginx_streams: []
 nginx_upstreams: []
 
 nginx_module_geoip2_enabled: false

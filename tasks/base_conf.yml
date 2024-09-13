@@ -70,3 +70,11 @@
     dest: "{{ nginx_conf_adds_dir }}/proxy_cache.conf"
   notify:
     nginx reload
+
+- name: setup upstream  
+  template:
+    src: upstreams.conf.j2
+    dest: "{{ nginx_conf_adds_dir }}/upstreams.conf"
+  notify:
+    nginx reload
+
