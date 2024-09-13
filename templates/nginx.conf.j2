@@ -26,3 +26,17 @@ http {
 {% endfor %}
 {% endif %}
 }
+
+stream {
+{% for stream in nginx_streams %}
+    upstream {{ stream.name }} {
+{% for host in stream.hosts %}
+        server {{ host.address }}:{{ host.port }} {{ host.options }};
+{% endfor %} 
+    }
+    server {
+        listen {{ stream.port }};
+        proxy_pass {{ stream.name }};
+    }
+{% endfor %} 
+}
