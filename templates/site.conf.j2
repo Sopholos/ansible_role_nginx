@@ -56,7 +56,7 @@ server {
 {% endif %}
 {% if location.response_headers is defined and location.response_headers | length >0 %}
 {% for header in location.response_headers %}
-        add_header {{ header.name }} {{ header.value }};
+        add_header "{{ header.name }}" "{{ header.value }}";
 {% endfor %}
 {% endif %}
 {% if location.proxy_cookie_flags is defined and location.proxy_cookie_flags | length >0 %}
@@ -65,8 +65,8 @@ server {
 {% endfor %}
 {% endif %}
 {% if location.options is defined and location.options|length >0 %}
-{% for key,value in location.options.items() %}
-        {{ key }} {{ value }};
+{% for item in location.options %}
+        {{ item.name }} {{ item.value }};
 {% endfor %}
 {% endif %}
     }
