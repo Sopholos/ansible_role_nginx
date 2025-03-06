@@ -16,6 +16,14 @@ server {
 {% endfor %}
 {% endif %}
 
+############
+{% if item.subdomain_redirect %}
+    if ($host ~ ^{{ item.subdomain_redirect.from }}\.(?<domain>.+)$) {
+        rewrite ^/(.*)$ https://{{ item.subdomain_redirect.to }}.$domain/$1 permanent;
+    }
+{% endif %}
+############
+
 {% if item.options is defined and item.options | length >0 %}
 {% for key,value in item.options.items() %}
 {{ key }} {{ value }};
