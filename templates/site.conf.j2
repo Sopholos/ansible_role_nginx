@@ -17,9 +17,14 @@ server {
 {% endif %}
 
 ############
+# {% if item.subdomain_redirect %}
+#     if ($host ~ ^{{ item.subdomain_redirect.from }}\.(?<domain>.+)$) {
+#         rewrite ^/(.*)$ https://{{ item.subdomain_redirect.to }}.$domain/$1 permanent;
+#     }
+# {% endif %}
 {% if item.subdomain_redirect %}
-    if ($host ~ ^{{ item.subdomain_redirect.from }}\.(?<domain>.+)$) {
-        rewrite ^/(.*)$ https://{{ item.subdomain_redirect.to }}.$domain/$1 permanent;
+    if ($host ~ ^from\.(?<domain>.+)$) {
+        return 301 $scheme://{{ item.subdomain_redirect.to }}.$domain$request_uri;
     }
 {% endif %}
 ############
