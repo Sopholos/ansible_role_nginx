@@ -15,19 +15,11 @@ server {
     return {{ return.code }} {{ return.url_text | default ('') }};
 {% endfor %}
 {% endif %}
-
-############
-# {% if item.subdomain_redirect %}
-#     if ($host ~ ^{{ item.subdomain_redirect.from }}\.(?<domain>.+)$) {
-#         rewrite ^/(.*)$ https://{{ item.subdomain_redirect.to }}.$domain/$1 permanent;
-#     }
-# {% endif %}
-{% if item.subdomain_redirect %}
-    if ($host ~ ^from\.(?<domain>.+)$) {
-        return 301 $scheme://{{ item.subdomain_redirect.to }}.$domain$request_uri;
+{% if item.redirect is defined %}
+    if ($host ~ ^(?<domain>.+)$) {
+        return {{ item.redirect.httpcode | default (307) }} {{ item.redirect.to }};
     }
 {% endif %}
-############
 
 {% if item.options is defined and item.options | length >0 %}
 {% for key,value in item.options.items() %}
