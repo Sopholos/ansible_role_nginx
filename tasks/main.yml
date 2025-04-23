@@ -39,6 +39,13 @@
   import_tasks: copy_certs.yml
   tags: [ config ]
 
+- name: force nginx re-apply config
+  debug: msg="trigger nginx-apply config"
+  notify: nginx restart
+  changed_when: true
+  when: nginx_force_reapply_config
+  tags: [ config, config_apply ]
+
 - name: setup geoip2 module
   import_tasks: setup_geoip2.yml
   when: nginx_module_geoip2_enabled

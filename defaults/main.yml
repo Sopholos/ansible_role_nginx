@@ -18,6 +18,8 @@ nginx_certs: []
 nginx_streams: []
 nginx_upstreams: []
 
+nginx_force_reapply_config: false
+
 nginx_module_geoip2_enabled: false
 
 nginx_geodb_dir: /usr/share/GeoIP
