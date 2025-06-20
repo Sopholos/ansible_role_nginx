@@ -1,2 +1,6 @@
+[Unit]
+After=network-online.target remote-fs.target nss-lookup.target systemd-resolved.service
+Wants=network-online.target systemd-resolved.service
+
 [Service]
 LimitNOFILE={{ nginx_systemd_nofile }}
