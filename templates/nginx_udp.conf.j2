@@ -1,0 +1,56 @@
+{% for key,value in nginx_config.items() %}
+{{ key }} {{ value }};
+{% endfor %}
+{% if nginx_config_includes is defined and nginx_config_includes | length >0 %}
+{% for include in nginx_config_includes %}
+include {{ include }};
+{% endfor %}
+{% endif %}
+
+events {
+    worker_connections  {{ nginx_worker_connections }};
+}
+
+{% if nginx_config_http is defined and nginx_config_http | length > 0 %}
+http {
+{% for key, value in nginx_config_http.items() %}
+    {{ key }}  {{ value }};
+{% endfor %}
+
+{% if nginx_config_http_includes is defined and nginx_config_http_includes | length >0 %}
+{% for include in nginx_config_http_includes %}
+    include {{ include }};
+{% endfor %}
+{% endif %}
+}
+{% endif %}
+
+stream {
+{% for stream in nginx_streams %}
+    upstream {{ stream.name }} {
+{% if stream.load_balancing_method is defined %}
+        {{ stream.load_balancing_method }};
+{% endif %}
+{% for host in stream.hosts %}
+        server {{ host.address }}:{{ host.port }}{% if host.options is defined and host.options %} {{ host.options }}{% endif %};
+{% endfor %} 
+    }
+    
+    server {
+        listen {{ stream.port }};
+        proxy_pass {{ stream.name }};
+{% if stream.proxy_timeout is defined %}
+        proxy_timeout {{ stream.proxy_timeout }};
+{% endif %}
+{% if stream.proxy_responses is defined %}
+        proxy_responses {{ stream.proxy_responses }};
+{% endif %}
+{% if stream.error_log is defined %}
+        error_log {{ stream.error_log }};
+{% endif %}
+{% if stream.proxy_bind is defined %}
+        proxy_bind {{ stream.proxy_bind }};
+{% endif %}
+    }
+{% endfor %} 
+}

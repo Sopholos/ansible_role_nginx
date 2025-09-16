@@ -29,12 +29,19 @@
     owner: "{{ nginx_system_user }}"
     group: "{{ nginx_system_group }}"
 
-- name: setup main config
+- name: setup main config (HTTP mode)
   template:
     src: nginx.conf.j2
     dest: "{{ nginx_conf_dir }}/nginx.conf"
-  notify:
-    nginx reload
+  when: not nginx_udp_only_mode
+  notify: nginx reload
+
+- name: setup main config (UDP mode)
+  template:
+    src: nginx_udp.conf.j2
+    dest: "{{ nginx_conf_dir }}/nginx.conf"
+  when: nginx_udp_only_mode
+  notify: nginx reload
 
 - name: "remove {{ nginx_conf_adds_dir }}/default.conf"
   file:
