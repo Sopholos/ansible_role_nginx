@@ -93,3 +93,5 @@ nginx_default_headers: []
 #    value: $http_host
 
 nginx_systemd_nofile: 65535
+
+nginx_udp_only_mode: false
