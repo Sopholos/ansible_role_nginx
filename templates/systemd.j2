@@ -5,3 +5,5 @@ Wants=network-online.target systemd-resolved.service
 [Service]
 LimitNOFILE={{ nginx_systemd_nofile }}
 ExecStartPre=/bin/sleep 10
+Restart=on-failure
+RestartSec=30s
