@@ -94,4 +94,10 @@ nginx_default_headers: []
 
 nginx_systemd_nofile: 65535
 
+# Автоперезапуск nginx юнитом. Пусто — директивы Restart/RestartSec не пишутся
+# (историческое поведение роли). На prodnginx они стоят на хостах давно, поэтому
+# там задаются в group_vars — иначе прогон роли их сносил.
+nginx_systemd_restart: ""
+nginx_systemd_restart_sec: 30s
+
 nginx_udp_only_mode: false
