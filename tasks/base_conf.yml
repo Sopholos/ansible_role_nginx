@@ -13,7 +13,9 @@
   template:
     src: systemd.j2
     dest: "{{ nginx_systemd_path }}/nginx.service.d/override.conf"
-  notify: nginx restart
+  notify:
+    - systemd daemon-reload
+    - nginx restart
 
 - name: Ensure cache dir exists
   file:
