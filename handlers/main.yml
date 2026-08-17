@@ -1,4 +1,8 @@
 ---
+- name: systemd daemon-reload
+  systemd:
+    daemon_reload: yes
+
 - name: nginx restart
   debug: msg="checking config first"
   changed_when: True
