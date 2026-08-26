@@ -5,6 +5,6 @@ proxy_set_header "{{ header.name }}" "{{ header.value }}";
 {% endif %}
 {% if nginx_default_response_headers is defined and nginx_default_response_headers | length >0 %}
 {% for header in nginx_default_response_headers %}
-add_header "{{ header.name }}" "{{ header.value }}";
+add_header "{{ header.name }}" "{{ header.value }}" always;
 {% endfor %}
 {% endif %}
